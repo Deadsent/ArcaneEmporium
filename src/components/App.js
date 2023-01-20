@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // where each adapter fetches specific info from our express server's /api route
 import { getAPIHealth, getUsers } from "../axios-services";
 import "../style/App.css";
-
+import{Home} from './index'
 const App = () => {
   const [APIHealth, setAPIHealth] = useState("");
   const [users, setUsers] = useState([]);
@@ -29,9 +29,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <h1>Hello, to the World!</h1>
-      <p>API Status: {APIHealth}</p>
-      <p>There are {users.length} customers.</p>
+      <Home/>
     </div>
   );
 };
