@@ -17,6 +17,34 @@ import axios from 'axios';
     }
   }
 
+  export async function registerUser({username, password}) {
+    try {
+      const {data: user} = await axios.post('/api/users/register', {
+        username: username,
+        password: password
+      })
+      console.log(user)
+      return user
+    } catch (error) {
+      console.error("Error in registerUser", error)
+      throw error
+    }
+
+  }
+
+  export async function loginUser({username, password}) {
+    try {
+      const {data: user} = await axios.post('/api/users/login', {
+        username: username,
+        password: password
+      })
+      return user 
+    } catch (error) {
+      console.error("Error in longUser", error)
+      throw error
+    }
+  }
+
 
 export async function getAPIHealth() {
   try {
