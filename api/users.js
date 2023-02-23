@@ -1,5 +1,6 @@
 const { getAllUsers, createUser, getUserByUsername } = require("../db/models/user");
-
+const jwt = require('jsonwebtoken')
+const {JWT_SECRET} = process.env
 const usersRouter = require("express").Router();
 
 usersRouter.use("/", (req, res, next) => {
@@ -10,13 +11,37 @@ usersRouter.use("/", (req, res, next) => {
 usersRouter.post('/register', async (req, res, next) => {
   try {
       const {username, password} = req.body;
-      console.log("REGISTER ROUTE", username, password)
+      const queriedUser = await getUserByUsername(username)
+      if(queriedUser){
+        res.status(401)
+        next({
+            name: "UserExistsError",
+            message: "A user by that username already exists."
+        })
+      } else {
       const newUser = await createUser({
         username: username, 
         password: password
       })
       console.log("NEW USER LOG", newUser)
-      res.send(newUser)
+      if(!newUser){
+        next({
+            name: "USerCreationError",
+            message: "There was a problem registering you. Please try again."
+        })
+      } else {
+        const token = jwt.sign({
+            id: newUser.id,
+            username: newUser.username
+        }, JWT_SECRET)
+        console.log("TOKEN LOG", token) 
+        res.send({
+            newUser,
+            message: "You're logged in!",
+            token
+        })
+      }
+    }
   } catch (error) {
       throw error
   }
